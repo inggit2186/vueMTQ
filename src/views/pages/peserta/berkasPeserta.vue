@@ -7,7 +7,7 @@
             <div class="dashboard-content">		
 			<div class="container">
                 <div  ref="scroll1st" class="pagination">
-                    <a class="btn btn-primary" href="#" @click="$router.go(-1)"><i class="fas fa-regular fa-arrow-left"></i> <b>KEMBALI</b></a>
+                    <a class="btn btn-primary" href="#" @click="$router.push({path: '/registrasi'})"><i class="fas fa-regular fa-arrow-left"></i> <b>KEMBALI</b></a>
                 </div>
                 <hr/>
                 <b-form @submit.prevent="addRequest">
@@ -43,8 +43,8 @@
                                     </BButton>
                                     <br/>
                                     <br/>
-                                    <BButton block size="lg" variant="warning" @click="editRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Edit Profil</b></span>
+                                    <BButton block size="lg" variant="danger" @click="editRequest()" :disabled="loadingRequest">
+                                        <span v-if="!loadingRequest"><b><i-icomoon-free-profile /> &nbsp;&nbsp;Edit Profil</b></span>
                                         <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
                                     </BButton>
                                 </div>
@@ -57,6 +57,12 @@
                                 <div v-if="request.status == 4" style="float:right;">
                                     <BButton block size="lg" variant="warning" @click="newRequest()" :disabled="loadingRequest">
                                         <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Ajukan Ulang</b></span>
+                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                    </BButton>
+                                    <br/>
+                                    <br/>
+                                    <BButton block size="lg" variant="danger" @click="editRequest()" :disabled="loadingRequest">
+                                        <span v-if="!loadingRequest"><b><i-icomoon-free-profile /> &nbsp;&nbsp;Edit Profil</b></span>
                                         <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
                                     </BButton>
                                 </div>
@@ -329,7 +335,6 @@ export default {
 								'Content-Type': 'application/json',
 								'Authorization': `Bearer ${localStorage.getItem('token')}`
 							};
-                
 				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/uploadSyarat',{
 					userid: userid,
                     id: itemId,
@@ -433,8 +438,7 @@ export default {
 			}
         },
         editRequest() {
-            /cabangmtq/reg/:tid/:jtid/:xid/:id
-            this.$router.push(`/cabangmtq/reg/pesertafiles/upload/${id}`)
+            this.$router.push(`/cabangmtq/edit/${this.request.teamstatus}/${this.request.maxteam}/${this.request.kategori_id}/${this.request.id}`)
         },
         async cancelRequest() {
             try{
@@ -482,7 +486,6 @@ export default {
 								'Authorization': `Bearer ${localStorage.getItem('token')}`
 							};
                 
-                 console.log(this.input.komen)
 				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/addKomen',{
 					userid: userid,
                     komen: this.input.komen

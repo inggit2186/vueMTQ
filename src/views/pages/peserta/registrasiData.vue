@@ -138,9 +138,13 @@
                                                     <div class="col-lg-6 col-md-6">
                                                         <div class="form-group">
                                                             <label class="col-form-label">Password*</label>
-                                                            <div class="group-img">
+                                                            <div v-if="nid == 'reg'" class="group-img">
                                                                 <i class="feather-lock"></i>
                                                                 <b-form-input id="password" v-model="user.password" type="password" class="form-control" placeholder="Password" />
+                                                            </div>
+                                                            <div v-else class="group-img">
+                                                                <i class="feather-lock"></i>
+                                                                <b-form-input id="password" v-model="user.password" type="password" class="form-control" placeholder="<Kosongkan Jika Tidak Ada Perubahan>" />
                                                             </div>
                                                         </div>
                                                     </div>											
@@ -149,8 +153,9 @@
                                         <br>
                                         <div class="text-center">
                                         <b-button variant="primary" type="submit" :disabled="loadingpf"> 
-                                            <span v-if="!loadingpf"><i class="fa fa-address-card" aria-hidden="true"></i>&nbsp; REGISTRASI </span>
-                                            <span v-else><i-svg-spinners-bars-scale-middle />&nbsp; Mendaftarkan Dulu Gan...</span>
+                                            <span v-if="!loadingpf && nid == 'reg'"><i class="fa fa-address-card" aria-hidden="true"></i>&nbsp; REGISTRASI </span>
+                                            <span v-else-if="!loadingpf && nid == 'edit'"><i class="fa fa-address-card" aria-hidden="true"></i>&nbsp; UPDATE PROFIL </span>
+                                            <span v-else><i-svg-spinners-bars-scale-middle />&nbsp; Loading Dulu Gan...</span>
                                         </b-button>
                                         </div>
                                     </div>
@@ -168,6 +173,7 @@
 export default {
     data() {
         return {
+            nid: this.$route.params.nid,
             tid: this.$route.params.tid,
             jtid: this.$route.params.jtid,
             cid: this.$route.params.xid,
@@ -198,9 +204,41 @@ export default {
         }
     },
   created() {
+        if(this.nid == 'edit'){
+            this.getData();
+        }
 		window.scrollTo(0,0)
 	},
   methods: {
+    async getData(){
+            try{
+				this.loading = true
+				const headers = {
+								'Content-Type': 'application/json',
+								'Authorization': `Bearer ${localStorage.getItem('token')}`
+							};
+
+				const response = await this.$axios.get(import.meta.env.VITE_APP_API_URL+'/getpeserta/'+this.gid, {headers})
+				
+				if(response.data.success == true){
+					this.user = response.data.data
+
+				}else{
+                    this.$swal.fire({
+                        title: 'Gagal',
+                        html: response.data.message,
+                        icon: 'error',
+                    })
+                }
+			} catch (error) {
+				this.$toast.fire({
+					title: error,
+					icon: 'error',
+				})
+			} finally {
+				this.loading = false
+			}
+        },
         async updateProfil() {
 			try{
 				this.loadingpf = true
@@ -210,6 +248,7 @@ export default {
 							};
 
 				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/savePeserta',{
+                    statusx: this.nid,
                     nama: this.user.name,
                     nik: this.user.nik,
                     kk: this.user.kk,
@@ -232,7 +271,11 @@ export default {
                         title: response.data.message,
                         icon: 'success',
                     })
-                    this.$router.push({ path: "/registrasi" });
+                    if(this.nid == 'reg'){
+                        this.$router.push({ path: "/registrasi" });
+                    }else if(this.nid == 'edit'){
+                        this.$router.push({ path: `/cabangmtq/reg/pesertafiles/upload/${this.gid}` });
+                    }
 				}else if(response.data.success == false){
                     this.$swal.fire({
                         title: 'Registrasi Gagal',

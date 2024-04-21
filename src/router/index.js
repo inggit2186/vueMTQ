@@ -70,7 +70,7 @@ const routes = [
         component: pesertaMTQ
     },
     {
-        path: '/cabangmtq/reg/:tid/:jtid/:xid/:id',
+        path: '/cabangmtq/:nid/:tid/:jtid/:xid/:id',
         name: 'pesertaMTQ',
         component: registrasiData,
         meta: {

@@ -63,12 +63,14 @@
                                                     <BBadge v-else-if="item.status == 4" variant="danger">DITOLAK</BBadge>
                                                     <BBadge v-else-if="item.status == 1" variant="secondary">BELUM LENGKAP</BBadge>
                                                     <br/>
+													<span v-if="item.status != 2 && item.status != 1" style="font-size: 14px;"><i-mingcute-comment-fill /><i> {{ item.keterangan }}	</i></span><br/>
                                                     <span v-if="item.status != 1" style="font-size: smaller;"><i><i-mdi-update /> Last Update : {{ item.update }}</i></span><br/>
-													<span v-if="item.status != 2 && item.status != 1" style="font-size: smaller;"><i-mdi-person-tie /><i> {{ item.petugas }}	</i></span><br/>
-													<span v-if="item.status != 2 && item.status != 1" style="font-size: smaller;"><i-mingcute-comment-fill /><i> {{ item.alasan }}	</i></span>
+													<span v-if="item.status != 2 && item.status != 1" style="font-size: 11px;"><i-mdi-person-tie /><i> {{ item.verifikator }}	</i></span>
+													
                                                 </td>
 												<td>
-													<BButton pill size="sm" variant="outline-primary" @click.prevent="aksiStatus(item.id)"><b><i-mdi-call-to-action /> UPLOAD BERKAS</b></BButton>
+													<BButton pill size="sm" variant="outline-primary" @click.prevent="aksiStatus(item.id)"><b><i-mdi-call-to-action /> DATA PESERTA</b></BButton><br/><br/>
+													<BButton v-if="item.status == 1 || item.status == 4" pill size="sm" variant="danger" @click.prevent="deletePeserta(item.id)"><b><i-bi-trash-fill /> DELETE PESERTA</b></BButton>
 												</td>
                                             </tr>
 										</tbody>
@@ -182,7 +184,6 @@ export default {
 	},
   methods: {
 		async getPeserta() {
-            this.sid = this.$route.params.id
 			this.loading = true;
 			try{
 				const headers = {
@@ -194,7 +195,6 @@ export default {
 				},{headers})
 				
 				if(response.data.success == true){
-                    console.log(response.data.data)
           			this.peserta0 = response.data.data
           			this.peserta = response.data.data
 				}else{
@@ -214,8 +214,54 @@ export default {
 			}
 		},
 		aksiStatus(id){
-			console.log(id)
 			this.$router.push(`cabangmtq/reg/pesertafiles/upload/${id}`)
+		},
+		async deletePeserta(id) {
+			this.$swal.fire({
+                title: "Apakah Anda Yakin?",
+                text: "Anda Tidak bisa untuk Membatalkannya!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                showLoaderOnConfirm: true,
+                confirmButtonText: "Ya, Hapus Peserta ini!",
+                preConfirm: async (deletePeserta) => {
+                    try{
+						const headers = {
+								'Content-Type': 'application/json',
+								'Authorization': `Bearer ${localStorage.getItem('token')}`
+							};
+						const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/deletepeserta',{
+							userid: id,
+						},{headers})
+						
+						if(response.data.success == true){
+							this.peserta0 = response.data.data
+							this.peserta = response.data.data
+						}else{
+							this.$toast.fire({
+								title: response.data.message,
+								icon: 'error',
+							})
+						}
+				
+					} catch (error) {
+						this.$toast.fire({
+							title: error,
+							icon: 'error',
+						})
+					}
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    this.$toast.fire({
+                    title: "File Telah Dihapus!",
+                    icon: "success"
+                    });
+                }
+            });
 		},
 		sortTable(column) {
 			if (this.currentSort === column) {
