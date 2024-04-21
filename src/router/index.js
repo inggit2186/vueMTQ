@@ -88,7 +88,7 @@ const routes = [
           }
     },
     {
-        path: '/cabangmtq/:xid/pesertafiles/upload/:id',
+        path: '/cabangmtq/reg/pesertafiles/upload/:id',
         name: 'Berkas Peserta',
         component: berkasPeserta,
         meta: {

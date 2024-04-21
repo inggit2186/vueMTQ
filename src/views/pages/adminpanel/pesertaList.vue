@@ -211,7 +211,7 @@ export default {
 			}
 		},
 		aksiStatus(id){
-			this.$router.push({path: `/cabangmtq/verif/pesertafiles/upload/${id}`})
+			this.$router.push({path: `/cabangmtq/reg/pesertafiles/upload/${id}`})
 		},
 		async deletePeserta(id) {
 			this.$swal.fire({
