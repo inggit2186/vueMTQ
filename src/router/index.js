@@ -297,7 +297,7 @@ const routes = [
 
 ]
 export const router = createRouter({
-    history: createWebHistory('/v2'),
+    history: createWebHistory('/emtq'),
     linkActiveClass: 'active',
     routes,
 });

@@ -41,69 +41,113 @@
                                         <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Kirim Pengajuan</b></span>
                                         <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
                                     </BButton>
+                                    <br/>
+                                    <br/>
+                                    <BButton block size="lg" variant="warning" @click="editRequest()" :disabled="loadingRequest">
+                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Edit Profil</b></span>
+                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                    </BButton>
                                 </div>
                                 <div v-if="request.status == 2" style="float:right;">
-                                    <BButton block size="lg" variant="warning" @click="updateRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Ubah Pengajuan</b></span>
-                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
-                                    </BButton>
-                                    <br/><br/>
                                     <BButton block size="lg" variant="danger" @click="cancelRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Batalkan Request</b></span>
-                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
-                                    </BButton>
-                                </div>
-                                <div v-else-if="request.status == 2 || request.status == 3" style="float:right;">
-                                    <BButton block size="lg" variant="danger" @click="cancelRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Batalkan Request</b></span>
+                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Batalkan Pengajuan</b></span>
                                         <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; Proses Pembatalan....</b></span>
                                     </BButton>
                                 </div>
-                                <table class="detailhead">
-                                    <td colspan="7" style="vertical-align: middle;padding: 0 23px 0 15px">
+                                <div v-if="request.status == 4" style="float:right;">
+                                    <BButton block size="lg" variant="warning" @click="newRequest()" :disabled="loadingRequest">
+                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Ajukan Ulang</b></span>
+                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                    </BButton>
+                                </div>
+                                <table>
+                                    <td colspan="5" style="vertical-align: middle;padding: 0 23px 0 15px">
                                         <img :src="request.pp" style="max-width: 130px;max-height: 180px;margin-bottom: 4px;" />
                                     </td>
                                     <td style="font-size:16px;">
-                                        <tr>
-                                            <td>Cabang</td>
-                                            <td>&nbsp; : &nbsp;</td>
-                                            <td> <BBadge style="font-size:14px;" variant="warning">{{ request.cabang }}</BBadge></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Nama </td>
-                                            <td>&nbsp; : &nbsp;</td>
-                                            <td>{{ request.name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tempat, Tanggal Lahir </td>
-                                            <td>&nbsp; : &nbsp;</td>
-                                            <td>{{ request.tempat_lahir }}, {{ request.tanggallahir }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Umur</td>
-                                            <td>&nbsp; : &nbsp;</td>
-                                            <td>{{ request.umur }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>NIK </td>
-                                            <td>&nbsp; : &nbsp;</td>
-                                            <td>{{ request.nik }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Nomor KK </td>
-                                            <td>&nbsp; : &nbsp;</td>
-                                            <td>{{ request.kk }}</td>
-                                        </tr>
                                         <tr>
                                             <td>Kontingen </td>
                                             <td>&nbsp; : &nbsp;</td>
                                             <td><BBadge style="font-size:14px;" variant="secondary">{{ request.kontingenx }}</BBadge></td>
                                         </tr>
+                                        <tr>
+                                            <td>Cabang</td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td> <BBadge style="font-size:14px;" variant="warning">{{ request.kategori }}</BBadge></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nama </td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.name }}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>NIK </td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.nik }}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nomor KK </td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.kk }}</b></td>
+                                        </tr>
                                     </td>
+                                    </table>
+                                    <hr/>
+                                    <table align="center" style="font-size:16px;">
+                                    <tr>
+                                    <td style="padding-right: 30px;float: left;border-right: solid 1px;">
+                                        <tr>
+                                            <td>Tempat, Tanggal Lahir </td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.tempat_lahir }}, {{ request.tanggallahir }}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Umur</td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.umur }}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kontak / Whatsapp</td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>+62 {{ request.telp }}</b></td>
+                                        </tr>
+                                    </td>
+                                    <td style="padding-left: 30px;padding-right: 30px;float: right;border-right: solid 1px;">
+                                        <tr>
+                                            <td>Pekerjaan</td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.pekerjaan }}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Sekolah/Tempat Kerja</td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.satker }}</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Email</td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.email }}</b></td>
+                                        </tr>
+                                    </td>
+                                    </tr>
+                                    <hr/>
+                                    <tr align="center">
+                                        <tr colspan="2">
+                                            <td>Alamat Lengkap</td>
+                                            <td>&nbsp; : &nbsp;</td>
+                                            <td><b>{{ request.alamat }}</b></td>
+                                        </tr>
+                                    </tr>
                                 </table>
                                 <br/>			
 							</div>
-                            <div class="card-body"  v-if="request.status == 1">
+                            <div class="card-body">
+                                <div v-if="request.status != 1">
+                                    <div class="text-center">
+                                    <b-img :src="$assets+'/img/ikonMTQ/'+request.status+'.png'" v-bind="mainProps" rounded width="350%"></b-img>
+                                    </div>
+                                </div>
+                                <hr/>
                                 <span style="font-size: small;"><b><i>*) Wajib Diupload/Diisi</i></b></span>
 							    <div class="row">
 									<div class="row">
@@ -116,7 +160,7 @@
                                                     <p class="my-4">Cek File!</p>
                                                 </BModal>
                                                 <hr/>
-                                                <div class="settings-upload-btn">
+                                                <div class="settings-upload-btn" v-if="request.status == 1 || request.status == 2 || request.status == 4">
                                                     <input id="file" type="file" name="image" class="hide-input image-upload" :disabled="loadingfile[item.id]" @change="onFileChange(item.id, $event)">
                                                     <label v-if="!loadingfile[item.id]" for="file" class="file-upload">
                                                         <span v-if="item.filename == 'NONE'"><i-ph-upload-fill /> Upload File</span>
@@ -135,11 +179,7 @@
 									</div>										
 								</div>					
 							</div>
-                            <div v-else>
-                                <div class="text-center">
-                                <b-img :src="$assets+'/img/ikon/'+request.status+'.png'" v-bind="mainProps" rounded width="350%"></b-img>
-                                </div>
-                                <hr>
+                            <div>
                                 <hr>
                                 <h2 class="text-center" style="font-weight: 700;"><i-ant-design-comment-outlined /> KOMENTAR</h2>
                                 <br/>
@@ -194,6 +234,7 @@ export default {
             imageUrl: [],
             syarat: [],
             komen: [],
+            input: [],
             request: null,
         }
     },
@@ -220,11 +261,12 @@ export default {
                     this.syarat = response.data.syarat
                     this.komen = response.data.komen
                 }else{
-                    this.datax = true,
-                    this.$toast.fire({
-                        title: response.data.message,
+                    this.$swal.fire({
+                        title: 'Akses Ditolak!',
+                        html: response.data.message,
                         icon: 'error',
                     })
+                    this.$router.go(-1);
                 }
 			} catch (error) {
 				this.$toast.fire({
@@ -356,20 +398,16 @@ export default {
         async newRequest() {
             try{
 				this.loadingRequest = true
-
-                const noreq = this.$route.params.id
-				
+                const userid = this.$route.params.id
                 
                 const headers = {
 								'Content-Type': 'application/json',
 								'Authorization': `Bearer ${localStorage.getItem('token')}`
 							};
                 
-				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/updateRequest',{
+				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/updatePeserta',{
                     statusx: 'new',
-					noreq: noreq,
-                    formx: this.input,
-                    baseurl: window.location.origin,
+					userid: userid,
 				}, {headers})
                 
                 if(response.data.success == true){
@@ -377,7 +415,7 @@ export default {
                         title: response.data.message,
                         icon: 'success',
                     })
-                    this.$router.push('/my-listing')  
+                    this.$router.push('/registrasi')  
                 }else{
                     this.$toast.fire({
                         title: response.data.message,
@@ -394,60 +432,23 @@ export default {
 				this.loadingRequest = false
 			}
         },
-        async updateRequest() {
-            try{
-				this.loadingRequest = true
-
-                const noreq = this.$route.params.id
-				
-                
-                const headers = {
-								'Content-Type': 'application/json',
-								'Authorization': `Bearer ${localStorage.getItem('token')}`
-							};
-                
-				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/updateRequest',{
-                    statusx: 'sending',
-					noreq: noreq,
-                    formx: this.input,
-                    baseurl: window.location.origin,
-				}, {headers})
-                
-                if(response.data.success == true){
-                    this.$toast.fire({
-                        title: response.data.message,
-                        icon: 'success',
-                    })
-                    this.$router.push('/my-listing')  
-                }else{
-                    this.$toast.fire({
-                        title: response.data.message,
-                        icon: 'error',
-                    })
-                }
-                
-			} catch (error) {
-				this.$toast.fire({
-					title: error,
-					icon: 'error',
-				})
-			} finally {
-				this.loadingRequest = false
-			}
+        editRequest() {
+            /cabangmtq/reg/:tid/:jtid/:xid/:id
+            this.$router.push(`/cabangmtq/reg/pesertafiles/upload/${id}`)
         },
         async cancelRequest() {
             try{
 				this.loadingRequest = true
 
-                const noreq = this.$route.params.id
+                const userid = this.$route.params.id
 				const headers = {
 								'Content-Type': 'application/json',
 								'Authorization': `Bearer ${localStorage.getItem('token')}`
 							};
                 
-				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/updateRequest',{
+				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/updatePeserta',{
                     statusx: 'batal',
-					noreq: noreq,
+					userid: userid,
 				}, {headers})
 
                 if(response.data.success == true){
@@ -455,7 +456,7 @@ export default {
                         title: response.data.message,
                         icon: 'success',
                     })
-                    this.$router.push('/my-listing')  
+                    this.request.status = 1;
                 }else{
                     this.$toast.fire({
                         title: response.data.message,
@@ -475,7 +476,7 @@ export default {
         async onEnter() {
             this.loadingkomen = true;
             try{
-                const noreq = this.$route.params.id
+                const userid = this.$route.params.id
 				const headers = {
 								'Content-Type': 'application/json',
 								'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -483,7 +484,7 @@ export default {
                 
                  console.log(this.input.komen)
 				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/addKomen',{
-					noreq: noreq,
+					userid: userid,
                     komen: this.input.komen
 				}, {headers})
                 
