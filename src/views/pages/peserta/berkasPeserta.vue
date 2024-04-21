@@ -7,7 +7,8 @@
             <div class="dashboard-content">		
 			<div class="container">
                 <div  ref="scroll1st" class="pagination">
-                    <a class="btn btn-primary" href="#" @click="$router.push({path: '/registrasi'})"><i class="fas fa-regular fa-arrow-left"></i> <b>KEMBALI</b></a>
+                    <a v-if="request.userrole == 'Official' || request.userrole == 'Peserta'" class="btn btn-primary" href="#" @click="$router.push({path: '/registrasi'})"><i class="fas fa-regular fa-arrow-left"></i> <b>KEMBALI</b></a>
+                    <a v-else class="btn btn-primary" href="#" @click="$router.push({path: `/kontingen/verif/${this.request.kontingen_id}`})"><i class="fas fa-regular fa-arrow-left"></i> <b>KEMBALI</b></a>
                 </div>
                 <hr/>
                 <b-form @submit.prevent="addRequest">
@@ -36,36 +37,53 @@
                                 </div>
 							    <h4>Upload File-File Syarat</h4>
                                 <hr/>
-                                <div v-if="request.status == 1" style="float:right;">
-                                    <BButton block size="lg" variant="warning" @click="newRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Kirim Pengajuan</b></span>
-                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
-                                    </BButton>
-                                    <br/>
-                                    <br/>
-                                    <BButton block size="lg" variant="danger" @click="editRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-icomoon-free-profile /> &nbsp;&nbsp;Edit Profil</b></span>
-                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
-                                    </BButton>
+                                <div v-if="request.userrole == 'Official' || request.userrole == 'Peserta'">
+                                    <div v-if="request.status == 1" style="float:right;">
+                                        <BButton block size="lg" variant="warning" @click="newRequest()" :disabled="loadingRequest">
+                                            <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Kirim Pengajuan</b></span>
+                                            <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                        </BButton>
+                                        <br/>
+                                        <br/>
+                                        <BButton block size="lg" variant="danger" @click="editRequest()" :disabled="loadingRequest">
+                                            <span v-if="!loadingRequest"><b><i-icomoon-free-profile /> &nbsp;&nbsp;Edit Profil</b></span>
+                                            <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                        </BButton>
+                                    </div>
+                                    <div v-if="request.status == 4" style="float:right;">
+                                        <BButton block size="lg" variant="warning" @click="newRequest()" :disabled="loadingRequest">
+                                            <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Ajukan Ulang</b></span>
+                                            <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                        </BButton>
+                                        <br/>
+                                        <br/>
+                                        <BButton block size="lg" variant="danger" @click="editRequest()" :disabled="loadingRequest">
+                                            <span v-if="!loadingRequest"><b><i-icomoon-free-profile /> &nbsp;&nbsp;Edit Profil</b></span>
+                                            <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                        </BButton>
+                                    </div>
+                                    <div v-if="request.status == 2" style="float:right;">
+                                        <BButton block size="lg" variant="danger" @click="cancelRequest()" :disabled="loadingRequest">
+                                            <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Batalkan Pengajuan</b></span>
+                                            <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; Proses Pembatalan....</b></span>
+                                        </BButton>
+                                    </div>
                                 </div>
-                                <div v-if="request.status == 2" style="float:right;">
-                                    <BButton block size="lg" variant="danger" @click="cancelRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Batalkan Pengajuan</b></span>
-                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; Proses Pembatalan....</b></span>
-                                    </BButton>
+                                <div v-else-if="request.userrole == 'Admin' || request.userrole == 'Petugas'">
+                                    <div v-if="request.status != 1" style="float:right;">
+                                        <BButton block size="lg" variant="danger" @click="verify(request.id)" :disabled="loadingRequest">
+                                            <span v-if="!loadingRequest"><b><i-uil-comment-verify /> &nbsp;&nbsp;Verifikasi</b></span>
+                                            <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                        </BButton>
+                                        <br/>
+                                        <br/>
+                                        <BButton block size="lg" variant="dark" @click="dnq(request.id)" :disabled="loadingRequest">
+                                            <span v-if="!loadingRequest"><b><i-guidance-forbidden-2/> &nbsp;&nbsp;Diskualifikasi</b></span>
+                                            <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
+                                        </BButton>
+                                    </div>
                                 </div>
-                                <div v-if="request.status == 4" style="float:right;">
-                                    <BButton block size="lg" variant="warning" @click="newRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-fluent-send-48-filled /> &nbsp;&nbsp;Ajukan Ulang</b></span>
-                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
-                                    </BButton>
-                                    <br/>
-                                    <br/>
-                                    <BButton block size="lg" variant="danger" @click="editRequest()" :disabled="loadingRequest">
-                                        <span v-if="!loadingRequest"><b><i-icomoon-free-profile /> &nbsp;&nbsp;Edit Profil</b></span>
-                                        <span v-else><b><i-svg-spinners-6-dots-scale-middle /> &nbsp;&nbsp; JNE Berangkat....</b></span>
-                                    </BButton>
-                                </div>
+                                
                                 <table>
                                     <td colspan="5" style="vertical-align: middle;padding: 0 23px 0 15px">
                                         <img :src="request.pp" style="max-width: 130px;max-height: 180px;margin-bottom: 4px;" />
@@ -166,19 +184,21 @@
                                                     <p class="my-4">Cek File!</p>
                                                 </BModal>
                                                 <hr/>
-                                                <div class="settings-upload-btn" v-if="request.status == 1 || request.status == 2 || request.status == 4">
-                                                    <input id="file" type="file" name="image" class="hide-input image-upload" :disabled="loadingfile[item.id]" @change="onFileChange(item.id, $event)">
-                                                    <label v-if="!loadingfile[item.id]" for="file" class="file-upload">
-                                                        <span v-if="item.filename == 'NONE'"><i-ph-upload-fill /> Upload File</span>
-                                                        <span v-else><i-material-symbols-change-circle-rounded /> Ganti File</span>
-                                                    </label>
-                                                    <label v-else for="file" class="file-upload"><i-svg-spinners-6-dots-scale-middle /> Kirim File..</label>
-                                                </div>
-                                                <br/>
-                                                <div>
-                                                    <BButton v-if="item.filename != null && item.filename != 'NONE'" block size="md" variant="danger" style="margin-top: 5px;" @click="deleteFile(item.id)">
-                                                        <span><i-fluent-delete-off-24-filled /> Delete File</span>
-                                                    </BButton>
+                                                <div v-if="request.userrole == 'Official' || request.userrole == 'Peserta'">
+                                                    <div class="settings-upload-btn" v-if="request.status == 1 || request.status == 2 || request.status == 4">
+                                                        <input id="file" type="file" name="image" class="hide-input image-upload" :disabled="loadingfile[item.id]" @change="onFileChange(item.id, $event)">
+                                                        <label v-if="!loadingfile[item.id]" for="file" class="file-upload">
+                                                            <span v-if="item.filename == 'NONE'"><i-ph-upload-fill /> Upload File</span>
+                                                            <span v-else><i-material-symbols-change-circle-rounded /> Ganti File</span>
+                                                        </label>
+                                                        <label v-else for="file" class="file-upload"><i-svg-spinners-6-dots-scale-middle /> Kirim File..</label>
+                                                    </div>
+                                                    <br/>
+                                                    <div>
+                                                        <BButton v-if="item.filename != null && item.filename != 'NONE'" block size="md" variant="danger" style="margin-top: 5px;" @click="deleteFile(item.id)">
+                                                            <span><i-fluent-delete-off-24-filled /> Delete File</span>
+                                                        </BButton>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -551,7 +571,151 @@ export default {
                     });
                 }
             });
+        },
+        verify() {
+
+        },
+
+        async verify(userid) {
+            if (window.innerWidth < 768) {
+                this.$swal.fire({
+                width: "100%",
+                title: "Apakah Anda Yakin?",
+                icon: "warning",
+				allowOutsideClick: true,
+				input: "textarea",
+				inputLabel: "Alasan/Keterangan Verifikasi",
+				inputPlaceholder: "Tulis Alasan/Keterangan Verifikasi Anda Disini...",
+				inputAttributes: {
+					"aria-label": "Tulis Alasan/Keterangan Verifikasi Anda Disini"
+				},
+				showConfirmButton: true,
+				showDenyButton: true,
+                confirmButtonText: `<i class="fa fa-thumbs-up"></i> &nbsp;SETUJUI`,
+				denyButtonText: `<i class="fa fa-thumbs-down"></i> &nbsp;TOLAK`,
+				returnInputValueOnDeny: true
+				}).then((result) => {
+					/* Read more about isConfirmed, isDenied below */
+					if (result.isConfirmed) {
+						this.updateStatus(userid,result.value,3)
+					}
+                    else if (result.isDenied) {
+						this.updateStatus(userid,result.value,4)
+					};
+				});
+            }else{
+                this.$swal.fire({
+                width: "50%",
+                title: "Apakah Anda Yakin?",
+                icon: "warning",
+				input: "textarea",
+				inputLabel: "Alasan/Keterangan Verifikasi",
+				inputPlaceholder: "Tulis Alasan/Keterangan Verifikasi Anda Disini...",
+				inputAttributes: {
+					"aria-label": "Tulis Alasan/Keterangan Verifikasi Anda Disini"
+				},
+				showConfirmButton: true,
+				showDenyButton: true,
+                confirmButtonText: `<i class="fa fa-thumbs-up"></i> &nbsp;SETUJUI`,
+				denyButtonText: `<i class="fa fa-thumbs-down"></i> &nbsp;TOLAK`,
+				returnInputValueOnDeny: true
+				}).then((result) => {
+					/* Read more about isConfirmed, isDenied below */
+					if (result.isConfirmed) {
+						this.updateStatus(userid,result.value,3)
+					}
+                    else if (result.isDenied) {
+						this.updateStatus(userid,result.value,4)
+					};
+				});
+            }
+        },
+        async updateStatus(userid,komen,st) {
+            this.loadingRequest = true;
+            console.log(st)
+            try{
+				const headers = {
+								'Content-Type': 'application/json',
+								'Authorization': `Bearer ${localStorage.getItem('token')}`
+							};
+                
+				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/updateStatus',{
+					userid: userid,
+                    komen: komen,
+                    status: st
+				}, {headers})
+                
+                if(response.data.success == true){
+                    this.$router.push({path: `/kontingen/verif/${this.request.kontingen_id}`})
+                        this.$toast.fire({
+                        title: "Peserta telah Berhasil Diverifikasi!",
+                        icon: "success"
+                    });
+                }else{
+                    this.$toast.fire({
+                        title: response.data.message,
+                        icon: 'error',
+                    })
+                }
+                
+			} catch (error) {
+				this.$toast.fire({
+					title: error,
+					icon: 'error',
+				})
+			} finally {
+				this.loadingRequest = false
+			}
+        },
+        async dnq(userid) {
+            this.$swal.fire({
+                title: "Apakah Anda Yakin?",
+                text: "Anda Tidak bisa untuk Membatalkannya!",
+                icon: "warning",
+                input: "textarea",
+				inputLabel: "Alasan/Keterangan Diskualifikasi",
+				inputPlaceholder: "Tulis Alasan/Keterangan Diskualifikasi Disini...",
+				inputAttributes: {
+					"aria-label": "Tulis Alasan/Keterangan Diskualifikasi Disini"
+				},
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                showLoaderOnConfirm: true,
+                confirmButtonText: "Ya, Diskualifikasi Peserta ini!",
+                preConfirm: async (xdnq) => {
+                    try {
+                        const headers = {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                                    };
+                        
+                        const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/disqualify',{
+                            userid: userid,
+                            alasan: xdnq
+                        }, {headers})
+
+                        if(response.data.success == true){
+                            this.syarat = response.data.syarat
+                        }
+                    } catch (error) {
+                    this.$swal.showValidationMessage(`
+                        Request failed: ${error}
+                    `);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    this.$router.push({path: `/kontingen/verif/${this.request.kontingen_id}`})
+                    this.$toast.fire({
+                    title: "Peserta telah didiskualifikasi!",
+                    icon: "success"
+                    });
+                }
+            });
         }
+
     }
 }
 </script>

@@ -40,6 +40,8 @@ import berkasPeserta from '@/views/pages/peserta/berkasPeserta.vue';
 
 //cPanel
 import AdminMenuVue from '@/views/pages/adminpanel/adminMenu.vue'
+import kontingenList from '@/views/pages/adminpanel/kontingenList.vue';
+import pesertaList from '@/views/pages/adminpanel/pesertaList.vue';
 import ListRequestVue from '@/views/pages/adminpanel/listRequest.vue'
 import DetailRequestVue from '@/views/pages/adminpanel/detailRequest.vue'
 import VerifCKH from '@/views/pages/adminpanel/LaporanKinerja.vue'
@@ -86,11 +88,11 @@ const routes = [
           }
     },
     {
-        path: '/cabangmtq/reg/pesertafiles/upload/:id',
+        path: '/cabangmtq/:xid/pesertafiles/upload/:id',
         name: 'Berkas Peserta',
         component: berkasPeserta,
         meta: {
-            requiresOfficial: true
+            requiresAuth: true
           }
     },
     {
@@ -219,6 +221,22 @@ const routes = [
           }
     },
     {
+        path: '/kontingen',
+        name: 'Daftar Kontingen',
+        component: kontingenList,
+        meta: {
+            requiresAdmin: true
+          }
+    },
+    {
+        path: '/kontingen/verif/:id',
+        name: 'Daftar Peserta',
+        component: pesertaList,
+        meta: {
+            requiresAdmin: true
+          }
+    },
+    {
         path: '/listreq/:id',
         name: 'Daftar Request',
         component: ListRequestVue,
@@ -317,7 +335,7 @@ router.beforeEach((to, from, next) => {
         // Check if the user is logged in
         if (localStorage.getItem('user')) {
             let userData = JSON.parse(localStorage.getItem("user"));
-            if(userData.rtoken == "1956kokciis3495"){
+            if(userData.rtoken == "1956kokciis3495" || userData.rtoken == '1456mdkjf898'){
                 next()
             }else{
                 Swal.fire({

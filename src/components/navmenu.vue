@@ -17,8 +17,11 @@
             <li :class="{'active': currentPath == 'contact'}">
                 <router-link to="/contact"><i-gg-phone /> &nbsp;Kontak Kami</router-link>
             </li>
-            <li v-if="auth" :class="{'active': currentPath == '/registrasi'}">
+            <li v-if="auth && user.rtoken == '5659cmzxkc5651'" :class="{'active': currentPath == '/registrasi'}">
                 <router-link to="/registrasi"><BBadge variant="warning" style="font-size: medium;"><i-fa-solid-quran /> &nbsp;Registrasi Peserta</BBadge></router-link>
+            </li>
+            <li v-else-if="(auth && user.rtoken == '1456mdkjf898') || (auth && user.rtoken == '1956kokciis3495')" :class="{'active': currentPath == '/admin'}">
+                <router-link to="/admin"><BBadge variant="warning" style="font-size: medium;"><i-grommet-icons-user-admin /> &nbsp;Panitia cPanel</BBadge></router-link>
             </li>
             <li v-if="auth" :class="{'active': currentPath == 'Profile'}" class="d-block d-sm-none">
                 <router-link to="/dashboard"><BBadge variant="success" style="font-size: medium;"><i class="feather-grid"></i> &nbsp;Profil</BBadge></router-link>

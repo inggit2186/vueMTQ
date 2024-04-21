@@ -117,6 +117,8 @@ import berkasPeserta  from './views/pages/peserta/berkasPeserta.vue'
 
 //cPanel
 import adminMenu from './views/pages/adminpanel/adminMenu.vue'
+import kontingenList from  './views/pages/adminpanel/kontingenList.vue'
+import pesertaList from   './views/pages/adminpanel/pesertaList.vue'
 import listRequest from './views/pages/adminpanel/listRequest.vue'
 import detailRequest from './views/pages/adminpanel/detailRequest.vue'
 import verifCKH from './views/pages/adminpanel/LaporanKinerja.vue'
@@ -246,6 +248,8 @@ app.component('berkasPeserta',berkasPeserta)
 
 //cPanel
 app.component('AdminMenu', adminMenu)
+app.component('kontingenList', kontingenList)
+app.component('pesertaList', pesertaList)
 app.component('ListRequest', listRequest)
 app.component('DetailRequest', detailRequest)
 app.component('VerifCKH',verifCKH)
