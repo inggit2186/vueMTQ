@@ -26,6 +26,17 @@
                             </router-link>
                         </div>
                         <div class="col-lg-3 col-md-3 centered">
+                            <router-link to='/cabangmtq/loot'>
+                            <div class="listMenu categories-content">
+                                <a href="javascript:void(0);" class="text-center aos aos-init aos-animate" data-aos="fade-up">
+                                <img :src="$assets+'/img/ikon/516.png'" style="width:100%;" alt="car1">
+                                <h6>Nomor Loot & Maqra'</h6>
+                                <span>Generate Nomor Loot dan Maqra</span>
+                                </a>								   
+                            </div>
+                            </router-link>
+                        </div>
+                        <div class="col-lg-3 col-md-3 centered">
                             <router-link to='/slipgaji'>
                             <div class="listMenu categories-content">
                                 <a href="javascript:void(0);" class="text-center aos aos-init aos-animate" data-aos="fade-up">

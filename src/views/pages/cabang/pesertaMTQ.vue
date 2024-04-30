@@ -26,7 +26,9 @@
                                             <a href="javascript:void(0);" class="text-center aos aos-init aos-animate" data-aos="fade-up">
                                             <img :src="itemx.pp" style="max-width: 200px;max-height: 250px;" alt="car1" @error="handleBrokenImage(itemx)">
                                             <h6>{{ itemx.name }}</h6>
-                                            <span>{{ itemx.jk }}</span>
+                                            <span style="font-size: small;font-weight: 600;">{{ itemx.jk }}</span>
+                                            <span style="font-size: small;font-style: italic;">{{ itemx.kontingen }}</span><br/>
+                                            <BButton size="sm" variant="info" style="max-width:50%;float:left;font-weight: 700" @click.prevent="loot(itemx.id)">Nomor Loot</BButton><BButton size="sm" variant="warning" style="max-width:50%;float:right;font-weight: 700" @click.prevent="maqra(itemx.id)">Maqra'</BButton>
                                             </a>								   
                                         </div>
                                         </router-link>
@@ -147,7 +149,40 @@ export default {
 		},
 		handleBrokenImage(item) {
 			item.imgid = 'o-'+(Math.floor(Math.random() * 16) + 1);
-		}
+		},
+        async loot(id) {
+            try{
+				const headers = {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${localStorage.getItem('token')}`
+					};
+				const response = await this.$axios.post(import.meta.env.VITE_APP_API_URL+'/getLoot',{
+                    id: id
+                },{headers})
+				
+				if(response.data.success == true){
+					this.cabang = response.data.data
+                    this.cabangx = response.data.cabang
+                    this.kategori = response.data.kategori
+				}else{
+					this.$toast.fire({
+						title: response.data.data,
+						icon: 'error',
+					})
+				}
+		
+			} catch (error) {
+				this.$toast.fire({
+					title: error,
+					icon: 'error',
+				})
+			} finally {
+				this.loading = false
+			}
+        },
+        async maqra() {
+            console.log('xxxxxxxssssssssssssss')
+        }
 	}
 }
 </script>

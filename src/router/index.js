@@ -72,7 +72,15 @@ const routes = [
         component: pesertaMTQ
     },
     {
-        path: '/cabangmtq/:nid/:tid/:jtid/:xid/:id',
+        path: '/cabangmtq/loot/:tid/:jtid/:xid/:id',
+        name: 'Loot Peserta',
+        component: pesertaMTQ,
+        meta: {
+            requiresAdmin: true
+          }
+    },
+    {
+        path: '/cabangmtq/req/:tid/:jtid/:xid/:id',
         name: 'pesertaMTQ',
         component: registrasiData,
         meta: {
