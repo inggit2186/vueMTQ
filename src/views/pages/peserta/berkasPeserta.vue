@@ -632,7 +632,6 @@ export default {
         },
         async updateStatus(userid,komen,st) {
             this.loadingRequest = true;
-            console.log(st)
             try{
 				const headers = {
 								'Content-Type': 'application/json',
